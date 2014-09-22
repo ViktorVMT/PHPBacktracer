@@ -1,0 +1,21 @@
+{
+    "name": "pertinax/phpbacktracer",
+    "type": "library",
+    "description": "Small,powerfull and customizable library to handle with E errors,Exceptions, biuld-in functionality to write log files, log custom data, retrieve custom data from log files . ",
+    "keywords": ["log","debug","exceptions","errors","logs"],
+    "homepage": "https://github.com/pertinax/phpbacktracer",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivaylo Ivanov",
+            "email": "Ivchoyyyy@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.0.0"
+    },
+    "autoload": {
+        "classmap":["class.Track.php"]
+    }
+}

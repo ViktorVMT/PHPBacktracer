@@ -1,0 +1,6 @@
+/logs
+vendor/
+*.logs
+*.log
+composer.lock
+
