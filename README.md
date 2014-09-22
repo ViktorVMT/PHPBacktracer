@@ -27,6 +27,8 @@ This software is licenced under the MIT. Please read LICENSE for information on 
 ```php
 <?php
 require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+// first param is the directory, the second one is key-value. In this case we use logs/errors.log
+// for E errors
 Track::settings('logs',array('errors' => 'errors.log'));
 ?>
 ```
