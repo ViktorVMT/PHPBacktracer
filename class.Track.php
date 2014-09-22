@@ -11,23 +11,23 @@
 Abstract Class Track {
 
 	/**
-    * @var string
-    * Directory for log error file(s)
-    */
-    public static $dir;
+	* @var string
+	* Directory for log error file(s)
+	*/
+	public static $dir;
 
 	/**
-    * @var array
-    * By default, show errors
-    */
-    public static $showErrors;
+	* @var array
+	* By default, show errors
+	*/
+	public static $showErrors;
 
-    /**
-    * @var array
-    * Array with file names to log errors and exception ( if its only one name, both E and 
-    * will be logged in the same file)
-    */
-    public static $files;
+	/**
+	* @var array
+	* Array with file names to log errors and exception ( if its only one name, both E and 
+	* will be logged in the same file)
+	*/
+	public static $files;
 
 	/**
 	* Check for php version, assing properties and determine whether to show errors or not 
@@ -125,14 +125,14 @@ Abstract Class Track {
 		$ExceptionMessage = "Exception Message: " . $e->getMessage();
 		$message = date("Y-m-d - H:i:s").' | Exception |: ';
 		if (isset($e->getTrace()[0])) {
-        	$message .= 'Exception in Class: '.$e->getTrace()[0]['class'].',';		
+			$message .= 'Exception in Class: '.$e->getTrace()[0]['class'].',';		
 		}else {
 			$message .= 'Exception in File: '.$e->getFile().',';
 		}  
-        $ExceptionNumber = $e->getCode();
+		$ExceptionNumber = $e->getCode();
 		$message .=  'Error Number: '.$ExceptionNumber.', Message: '.$ExceptionMessage;
 		self::dispatchError($message,true);
-        
+		
 	}
 
 	/**
@@ -145,24 +145,24 @@ Abstract Class Track {
 	public static function errorHandler ( $errno, $error, $errstr, $errLine ) {
 
 		$message = date("Y-m-d - H:i:s") . ' | ERROR |: ';
-        switch ($errno) {
-        	case 2:
-        		$message .= 'WARNING : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;      
-        		break;
-        	case  4:
-        		$message .= 'PARSE ERROR : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
-        		break;
-        	case  8:
-        		$message .= 'NOTICE : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
-        		break;
-        	case  1024:
-        		$message .= 'TRIGGER ERROR : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
-        		break;         		   
-        	case  2048:
-        		$message .= 'STRICT : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
-        		break; 
-        }
-        self::dispatchError($message,false);
+		switch ($errno) {
+			case 2:
+				$message .= 'WARNING : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;	  
+				break;
+			case  4:
+				$message .= 'PARSE ERROR : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
+				break;
+			case  8:
+				$message .= 'NOTICE : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
+				break;
+			case  1024:
+				$message .= 'TRIGGER ERROR : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
+				break;		 		   
+			case  2048:
+				$message .= 'STRICT : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
+				break; 
+		}
+		self::dispatchError($message,false);
    
 	} 
 
