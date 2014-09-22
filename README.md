@@ -30,46 +30,36 @@ require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 Track::settings('logs',array('errors' => 'errors.log'));
 ?>
 ```
-
 To put in separate folder errors, exceptions and logs:
 ``` 
 Track::settings('logs',array('errors' => 'errors.log','exceptions' => 'exceptions.log','trace' => 'log.log'));
-
 ```
 To disable display option ( By default is enabled ):
 ```php 
 Track::settings('logs',array('errors' => 'errors.log','exceptions' => 'exceptions.log','trace' => 'log.log'),array('displayMessage' => false));
-
-
 ```
 To write single message into log file: 
 ```php
 Track::log('just random text');
-
 ```
 To disable display message and add a custom path 
 Notice: if you specify another route, make sure it's created already
 ```php
 Track::log('just random text',array('displayMessage' => true,'route' => 'anotherDir/anotherFile.log'));
-
 ```
 To retrieve data from log file:
 ```php
 Track::retrieveLogs(array('exceptions.log'));
-
 ```
 To retrieve data from multiple files
 ```php
 Track::retrieveLogs(array('exceptions.log','errors.log','log.log')));
-
 ```
 To set filter for the previous day, search by case ( error, exception or log ) and by keyword
 ```php
 Track::retrieveLogs(array('exceptions.log','errors.log'),array('date' => '1 day','case' => 'error', 'keyword' => 'in'));
-
 ```
 To set filter for the previous day, search by case ( error, exception or log ) and by keyword in descading order, limit by 10
 ```php
 Track::retrieveLogs(array('exceptions.log','errors.log'),array('date' => '1 day','case' => 'error', 'keyword' => 'in'),true,10);
-
 ```
