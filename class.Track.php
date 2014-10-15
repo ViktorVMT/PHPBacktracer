@@ -41,8 +41,8 @@ Abstract Class Track {
         defined('DS') ? true : define('DS',DIRECTORY_SEPARATOR);
         $phpVersion = substr(PHP_VERSION,0,1);
         if ($phpVersion < 5) {
-            print('Error! Track library needs php5 and above');        
-            return false;    
+            print('Error! Track library needs php5 and above');     
+            return false;   
         }
         if (!is_array($files)) {
             print('Files param should be an array with at least one file where to write'."\n");
@@ -52,7 +52,7 @@ Abstract Class Track {
             self::$showErrors = $settings['displayMessage'];
         } else {
             self::$showErrors = true;
-        }        
+        }       
         if (self::resolveLogDir($dir)) {
             self::$files = $files;
             self::setHandlers();
@@ -82,15 +82,15 @@ Abstract Class Track {
             self::$dir = $dir.DS;
         }
         $path = dirname($_SERVER['SCRIPT_FILENAME']).DS.self::$dir;
-        if (!is_dir($path)) {    
+        if (!is_dir($path)) {   
             if (!mkdir($path, 0766, true)) {    
-                print('Cannot create log directory'."\n");    
-                return false;                
-            }    
+                print('Cannot create log directory'."\n");  
+                return false;               
+            }   
         } elseif (!is_writable($path)) {
             print('Directory is not writable');
             return false;
-        }    
+        }   
         return true;
 
     }
@@ -100,7 +100,7 @@ Abstract Class Track {
     * @link http://php.net/manual/en/function.set-error-handler.php
     * @return boolean
     */
-    public static function setHandlers () {    
+    public static function setHandlers () { 
 
         /*
         The following error types cannot be handled with a 
@@ -110,9 +110,9 @@ Abstract Class Track {
         */
         error_reporting(E_ALL ^ E_DEPRECATED | E_ERROR | E_PARSE | E_CORE_ERROR 
             | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_STRICT);
-          set_Exception_handler(array(get_class(), 'ExceptionHandler'));
-          set_error_handler(array(get_class(), "errorHandler"));    
-          return true;
+        set_Exception_handler(array(get_class(), 'ExceptionHandler'));
+        set_error_handler(array(get_class(), "errorHandler"));  
+        return true;
 
     }
 
@@ -125,7 +125,7 @@ Abstract Class Track {
         $ExceptionMessage = "Exception Message: " . $e->getMessage();
         $message = date("Y-m-d - H:i:s").' | Exception |: ';
         if (isset($e->getTrace()[0])) {
-            $message .= 'Exception in Class: '.$e->getTrace()[0]['class'].',';        
+            $message .= 'Exception in Class: '.$e->getTrace()[0]['class'].',';      
         }else {
             $message .= 'Exception in File: '.$e->getFile().',';
         }  
@@ -157,10 +157,13 @@ Abstract Class Track {
                 break;
             case  1024:
                 $message .= 'TRIGGER ERROR : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
-                break;                    
+                break;                 
             case  2048:
                 $message .= 'STRICT : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
                 break; 
+            case 4096:
+                $message .= 'CATCHABLE : ' . $error . ' in ' . $errstr . ' in line : ' . $errLine;
+                break;
         }
         self::dispatchError($message,false);
    
@@ -174,7 +177,7 @@ Abstract Class Track {
     public static function dispatchError ( $message, $exceptions ) {
 
         if (isset(self::$files['exceptions'])) {
-            if ($exceptions) {    
+            if ($exceptions) {  
                 self::log($message,
                     array('route' => self::$dir.self::$files['exceptions'],'displayMessage' => self::$showErrors, 'error' => true));                
             } else {    
@@ -206,22 +209,22 @@ Abstract Class Track {
         }
         if (!empty($settings) && !is_array($settings)) {
             trigger_error('Settings must be key-value array');
-            return false;            
+            return false;           
         }
         if (isset($settings['error']) && !self::$files) {
             trigger_error('There is no specified error log files');
             return false;
         }elseif (!isset($settings['error'])) {
             $message = date("Y-m-d - H:i:s") . ' | LOG |: ' . $msg;
-            if (!isset($settings['route'])) {                
-                if (isset(self::$files['trace'])) {    
-                    $settings['route'] = self::$dir . self::$files['trace'];    
+            if (!isset($settings['route'])) {               
+                if (isset(self::$files['trace'])) { 
+                    $settings['route'] = self::$dir . date('Y-m-d') . ' ' . self::$files['trace'];  
                 } else {    
                     print('You didn\'t spesify any log file, a defaultLog.logs file will be created'."\n");
                     self::$files['trace'] = 'defaultLogs.logs';
-                    $settings['route'] = self::$dir . self::$files['trace'];    
-                }            
-            }                                
+                    $settings['route'] = self::$dir . date('Y-m-d') . ' ' . self::$files['trace'];  
+                }           
+            }                               
         } else {
             $message = $msg;
         }
@@ -229,7 +232,10 @@ Abstract Class Track {
             print('The file specified is not writable');
             return false;
         }
-        if (isset($settings['displayMessage']) && $settings['displayMessage']) {
+        if (!isset($settings['displayMessage'])) {
+            $settings['displayMessage'] = true;
+        }
+        if ($settings['displayMessage']) {
             print(nl2br($message)."\n");
         }  
         if ($settings['route'] && strlen($settings['route']) > 0) {
@@ -245,7 +251,7 @@ Abstract Class Track {
                 return false;
             }
         }
-        return false;        
+        return false;       
 
     }
 
@@ -268,16 +274,16 @@ Abstract Class Track {
             $file = self::$dir . $fileName;
             $continue = false;
             file_exists($file) ? $continue = true : trigger_error($file . " is not existing");
-            is_readable($file) ? $continue = true : trigger_error($file . " is not readable");    
+            is_readable($file) ? $continue = true : trigger_error($file . " is not readable");  
             if (!$continue) {
-                trigger_error("Unable to retrieve log data from ".$file);    
+                trigger_error("Unable to retrieve log data from ".$file);   
             } else {
                 $handle = fopen($file, 'r');
                 $size = filesize($file);
                 if ($size > 0) {
                     $logs[$fileName] = explode("<<<ENDLINE>>>",fread($handle, $size));
-                    // remove empty "new line \n";    
-                    unset($logs[$fileName][count($logs[$fileName]) - 1]);        
+                    // remove empty "new line \n";  
+                    unset($logs[$fileName][count($logs[$fileName]) - 1]);       
                     $desc ? $logs[$fileName] = array_reverse($logs[$fileName]) : false;
                     $logs[$fileName] = array_map('trim',$logs[$fileName]);
                     if (isset($filter['date'])) {
@@ -292,12 +298,12 @@ Abstract Class Track {
                     if (isset($filter['case'])) {
                         if ($filter['case'] != 'error' && $filter['case'] != 'log' 
                           && $filter['case'] != 'exception') {
-                            trigger_error("Param case should error,exception or log");    
-                            return;
-                                    }            
+                            trigger_error("Param case should error,exception or log");  
+                            return false;
+                        }           
                         foreach ($logs[$fileName] as $row => $line) {
                             if (strlen($line) > 1) {
-                                $line = trim(explode("|", $line)[1]);                        
+                                $line = trim(explode("|", $line)[1]);                       
                             }
                             if (strtolower($line) != strtolower($filter['case'])) {
                                 unset($logs[$fileName][$row]);
@@ -314,18 +320,18 @@ Abstract Class Track {
                     if ($limit) {
                         if (!is_numeric($limit)) {
                             trigger_error("Param limit should be numeric value");
-                            return;
+                            return false;
                         }
                         $length = count($logs[$fileName]);
                         if ($length > $limit) {
-                            $logs[$fileName] = array_slice($logs[$fileName], 0, - ($length - $limit));                    
+                            $logs[$fileName] = array_slice($logs[$fileName], 0, - ($length - $limit));                  
                         }
                     }
                 }
                 fclose($handle);
-            }    
+            }   
 
-        }        
+        }       
         return $logs;
 
     }
