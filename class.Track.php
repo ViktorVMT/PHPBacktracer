@@ -81,7 +81,7 @@ Abstract Class Track {
         } else {
             self::$dir = $dir.DS;
         }
-        $path = dirname($_SERVER['SCRIPT_FILENAME']).DS.self::$dir;
+        $path = $dir; //dirname($_SERVER['SCRIPT_FILENAME']).DS.self::$dir;
         if (!is_dir($path)) {   
             if (!mkdir($path, 0766, true)) {    
                 print('Cannot create log directory'."\n");  
